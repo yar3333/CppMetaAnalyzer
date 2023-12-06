@@ -26,17 +26,33 @@ public class Program
 
     private static unsafe CXChildVisitResult Visitor(CXCursor cursor, CXCursor parent, void* client_data)
     {
-        if (cursor.IsDeclaration && cursor.Kind == CXCursorKind.CXCursor_CXXMethod 
-                                 && cursor.CXXAccessSpecifier == CX_CXXAccessSpecifier.CX_CXXPublic)
+        if (cursor.Kind != CXCursorKind.CXCursor_MacroDefinition)
         {
-            var fullName = getFullName(cursor);
-            Console.WriteLine("Public method: " + fullName);
-            publicMethods.Add(fullName);
-        }
+            if (cursor.IsDeclaration && cursor.Kind == CXCursorKind.CXCursor_CXXMethod 
+                                     && cursor.CXXAccessSpecifier == CX_CXXAccessSpecifier.CX_CXXPublic)
+            {
+                var fullName = getFullName(cursor);
+                Console.WriteLine("Public method: " + fullName);
+                publicMethods.Add(fullName);
+            }
 
-        if (cursor.Kind == CXCursorKind.CXCursor_CallExpr)
-        {
-            int a = 5;
+            /*if (cursor.Kind == CXCursorKind.CXCursor_CallExpr)
+            {
+                var fullName = getFullName(cursor);
+                Console.WriteLine("Call method: " + fullName + " [from " + "TODO" +"]");
+                int a = 5;
+            }*/
+
+            if (cursor.Kind == CXCursorKind.CXCursor_DeclRefExpr)
+            {
+                //               var fullName = getFullName(cursor);
+                int a = 5;
+            }
+            if (cursor.Kind == CXCursorKind.CXCursor_MemberRefExpr)
+            {
+                //               var fullName = getFullName(cursor);
+                int a = 5;
+            }
         }
 
         return CXChildVisitResult.CXChildVisit_Recurse;
