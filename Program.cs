@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using ClangSharp;
 using ClangSharp.Interop;
+using CppMetaAnalyzer;
 
 public class Program
 {
     private static List<string> publicMethods = new();
+    private static List<FieldRef> fieldRefs = new();
 
     [STAThread]
     public static void Main()
@@ -36,22 +38,24 @@ public class Program
                 publicMethods.Add(fullName);
             }
 
-            /*if (cursor.Kind == CXCursorKind.CXCursor_CallExpr)
-            {
-                var fullName = getFullName(cursor);
-                Console.WriteLine("Call method: " + fullName + " [from " + "TODO" +"]");
-                int a = 5;
-            }*/
-
             if (cursor.Kind == CXCursorKind.CXCursor_DeclRefExpr)
             {
-                //               var fullName = getFullName(cursor);
-                int a = 5;
+                var fullName = getFullName(cursor.Referenced);
+                var refFrom = getFullName(cursor.SemanticParent);
+                Console.WriteLine("Ref to " + fullName + " from " + refFrom);
+                fieldRefs.Add(new FieldRef(fullName, refFrom));
+                //int a = 5;
             }
+
+            // ACls *p;
+            // p->myFunc3();
             if (cursor.Kind == CXCursorKind.CXCursor_MemberRefExpr)
             {
-                //               var fullName = getFullName(cursor);
-                int a = 5;
+                var fullName = getFullName(cursor.Referenced);
+                var refFrom = getFullName(cursor.SemanticParent);
+                Console.WriteLine("Ref to " + fullName + " from " + refFrom);
+                fieldRefs.Add(new FieldRef(fullName, refFrom));
+                //int a = 5;
             }
         }
 
